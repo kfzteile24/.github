@@ -1,0 +1,39 @@
+name: Publish dotnet core 2.2
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  publish-gpr:
+    runs-on: ubuntu-latest
+    env:
+      DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: true
+      DOTNET_NOLOGO: true
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 2.2
+      - name: Update package informations
+        run: sudo apt update
+      - name: Install nuget CLI
+        run: sudo apt -y install nuget # Net Core SDK 2.2 doesn't have possibility to add sources via `dotnet nuget sources add`
+      - name: Add Github Package Registry source
+        run: nuget sources add -Name github -Source https://nuget.pkg.github.com/${{github.repository_owner}}/index.json -Username ${{secrets.GPR_USER} -Password ${{secrets.GPR_TOKEN}} # Token provides only read access, to be replaced once tech leads are back
+      - name: Restore dependencies
+        run: nuget restore -NonInteractive
+      - name: Test
+        run: dotnet test
+      - name: Build
+        run: dotnet build --no-restore -c Release
+      - name: Pack
+        run: dotnet pack -c Release
+
+      - uses: actions/setup-dotnet@v1
+        with:
+          source-url: https://nuget.pkg.github.com/${{github.repository_owner}}/index.json
+        env:
+          NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      - name: Push
+        run: dotnet nuget push src/bin/Release/*.nupkg

@@ -1,0 +1,13 @@
+{
+    "name": "Publish dotnet core 2.2",
+    "description": "Builds and publishes a dotnet package using dotnet core 2.2.",
+    "iconName": "dotnet-logo",
+    "categories": [
+        "C#"
+    ],
+    "filePatterns": [
+        "*.cs",
+        "*.sln",
+        "*.csproj"
+    ]
+}
