@@ -1,0 +1,13 @@
+{
+    "name": "Publish dotnet core 2.1 (Restore with GPR)",
+    "description": "Builds and publishes a dotnet package using dotnet core 2.1. Restores using GitHub Packages additionally.",
+    "iconName": "dotnet-logo",
+    "categories": [
+        "C#"
+    ],
+    "filePatterns": [
+        "*.cs",
+        "*.sln",
+        "*.csproj"
+    ]
+}

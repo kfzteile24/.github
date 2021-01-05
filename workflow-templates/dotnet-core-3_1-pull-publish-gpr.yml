@@ -1,0 +1,38 @@
+name: Publish dotnet core 3.1 (Restore with GPR)
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  publish-gpr:
+    runs-on: ubuntu-latest
+    env:
+      DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: true
+      DOTNET_NOLOGO: true
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1
+      - name: Add Github Package Registry source
+        run: dotnet nuget add source -n github -u ${{secrets.GPR_USER} -p ${{secrets.GPR_TOKEN}} --store-password-in-clear-text https://nuget.pkg.github.com/${{github.repository_owner}}/index.json # TODO: Token provides only read access, to be replaced once tech leads are back
+      - name: Restore dependencies
+        run: dotnet restore
+      # TODO: Uncomment if test setup has docker-compose dependencies
+      # - name: Prepare test environment
+      #   run: docker-compose up -d
+      - name: Test
+        run: dotnet test
+      - name: Build
+        run: dotnet build --no-restore -c Release
+      - name: Pack
+        run: dotnet pack -c Release
+
+      - uses: actions/setup-dotnet@v1
+        with:
+          source-url: https://nuget.pkg.github.com/${{github.repository_owner}}/index.json
+        env:
+          NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      - name: Push
+        run: dotnet nuget push src/bin/Release/*.nupkg
