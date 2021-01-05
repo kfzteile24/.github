@@ -20,7 +20,7 @@ jobs:
       - name: Install nuget CLI
         run: sudo apt -y install nuget # `dotnet nuget add` comes with .NET Core 3.1.200 SDK or later versions
       - name: Add Github Package Registry source
-        run: nuget sources add -Name github -Source https://nuget.pkg.github.com/${{github.repository_owner}}/index.json -Username ${{secrets.GPR_USER} -Password ${{secrets.GPR_TOKEN}} # TODO: Token provides only read access, to be replaced once tech leads are back
+        run: nuget sources add -Name github -Source https://nuget.pkg.github.com/${{github.repository_owner}}/index.json -Username ${{secrets.GPR_USER}} -Password ${{secrets.GPR_TOKEN}} # TODO: Token provides only read access, to be replaced once tech leads are back
       - name: Restore dependencies
         run: nuget restore -NonInteractive
       # TODO: Uncomment if test setup has docker-compose dependencies
