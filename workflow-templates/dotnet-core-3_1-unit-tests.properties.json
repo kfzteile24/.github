@@ -1,0 +1,13 @@
+{
+    "name": "Unit Testing for Dotnet Core 3.1",
+    "description": "Dotnet tests your tests placed under `test/UnitTests`.",
+    "iconName": "dotnet-logo",
+    "categories": [
+        "C#"
+    ],
+    "filePatterns": [
+        "*.cs",
+        "*.sln",
+        "*.csproj"
+    ]
+}

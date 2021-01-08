@@ -1,0 +1,38 @@
+name: Dotnet Integration Tests
+
+on:
+  pull_request:
+    branches: [master, develop]
+
+jobs:
+  integration-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: true
+      DOTNET_NOLOGO: true
+      AWS_REGION: eu-central-1
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1
+
+      - uses: actions/cache@v2
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Remove Custom Nuget server source
+        run: dotnet nuget remove source "K24 nuget server" # TODO: To be removed
+      - name: Add Github Package Registry source
+        run: dotnet nuget add source -n github -u ${{secrets.GPR_USER}} -p ${{secrets.GPR_TOKEN}} --store-password-in-clear-text https://nuget.pkg.github.com/${{github.repository_owner}}/index.json # TODO: Token provides only read access, to be replaced once tech leads are back
+      - name: Restore dependencies
+        run: dotnet restore test/IntegrationTests/*.csproj
+      - name: Prepare test environment
+        run: docker-compose up -d
+      - name: Test
+        run: dotnet test --no-restore test/IntegrationTests/*.csproj

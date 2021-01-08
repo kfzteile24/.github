@@ -1,0 +1,13 @@
+{
+    "name": "Integration Testing for Dotnet Core 3.1",
+    "description": "Start docker-compose and dotnet tests your tests placed under `test/IntegrationTests`.",
+    "iconName": "dotnet-logo",
+    "categories": [
+        "C#"
+    ],
+    "filePatterns": [
+        "*.cs",
+        "*.sln",
+        "*.csproj"
+    ]
+}
