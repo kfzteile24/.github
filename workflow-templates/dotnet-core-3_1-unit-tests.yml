@@ -12,6 +12,8 @@ jobs:
       DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: true
       DOTNET_NOLOGO: true
       AWS_REGION: eu-central-1
+      GPR_READONLY_USER: ${{secrets.GPR_READONLY_USER}}
+      GPR_READONLY_TOKEN: ${{secrets.GPR_READONLY_TOKEN}}
     steps:
       - uses: actions/checkout@v2
 
@@ -29,7 +31,7 @@ jobs:
       - name: Remove Custom Nuget server source
         run: dotnet nuget remove source "K24 nuget server" # TODO: To be removed
       - name: Add Github Package Registry source
-        run: dotnet nuget add source -n github -u ${{secrets.GPR_USER}} -p ${{secrets.GPR_TOKEN}} --store-password-in-clear-text https://nuget.pkg.github.com/${{github.repository_owner}}/index.json # TODO: Token provides only read access, to be replaced once tech leads are back
+        run: dotnet nuget add source -n github -u $GPR_READONLY_USER -p $GPR_READONLY_TOKEN --store-password-in-clear-text https://nuget.pkg.github.com/${{github.repository_owner}}/index.json
       - name: Restore dependencies
         run: dotnet restore test/UnitTests/*.csproj
       - name: Test

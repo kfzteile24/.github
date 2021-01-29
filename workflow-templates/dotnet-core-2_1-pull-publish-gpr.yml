@@ -2,7 +2,7 @@ name: Publish dotnet core 2.1 (Restore with GPR)
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   publish-gpr:
@@ -10,6 +10,8 @@ jobs:
     env:
       DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: true
       DOTNET_NOLOGO: true
+      GPR_READONLY_USER: ${{secrets.GPR_READONLY_USER}}
+      GPR_READONLY_TOKEN: ${{secrets.GPR_READONLY_TOKEN}}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-dotnet@v1
@@ -20,7 +22,7 @@ jobs:
       - name: Install nuget CLI
         run: sudo apt -y install nuget # `dotnet nuget add` comes with .NET Core 3.1.200 SDK or later versions
       - name: Add Github Package Registry source
-        run: nuget sources add -Name github -Source https://nuget.pkg.github.com/${{github.repository_owner}}/index.json -Username ${{secrets.GPR_USER}} -Password ${{secrets.GPR_TOKEN}} # TODO: Token provides only read access, to be replaced once tech leads are back
+        run: nuget sources add -Name github -Source https://nuget.pkg.github.com/${{github.repository_owner}}/index.json -Username $GPR_READONLY_USER -Password $GPR_READONLY_TOKEN
       - name: Restore dependencies
         run: nuget restore -NonInteractive
       # TODO: Uncomment if test setup has docker-compose dependencies
