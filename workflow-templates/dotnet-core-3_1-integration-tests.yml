@@ -28,8 +28,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget-
 
-      - name: Remove Custom Nuget server source
-        run: dotnet nuget remove source "K24 nuget server" # TODO: To be removed
+      # Uncomment this if you still need your custom Nuget.config
+      # - name: Remove Custom Nuget server source
+      #   run: dotnet nuget remove source "K24 nuget server"
       - name: Add Github Package Registry source
         run: dotnet nuget add source -n github -u $GPR_READONLY_USER -p $GPR_READONLY_TOKEN --store-password-in-clear-text https://nuget.pkg.github.com/${{github.repository_owner}}/index.json
       - name: Restore dependencies
