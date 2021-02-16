@@ -1,0 +1,19 @@
+name: Docker build
+
+on:
+  pull_request:
+    branches: [master, develop]
+    paths:
+      - "src/Dockerfile"
+
+jobs:
+  docker-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GPR_READONLY_USER: ${{secrets.GPR_READONLY_USER}}
+      GPR_READONLY_TOKEN: ${{secrets.GPR_READONLY_TOKEN}}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build docker image
+        run: docker build . -f "src/Dockerfile" --build-arg GPR_USER=$GPR_READONLY_USER --build-arg GPR_TOKEN=$GPR_READONLY_TOKEN

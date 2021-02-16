@@ -1,0 +1,11 @@
+{
+    "name": "Build your dockerfile",
+    "description": "Builds a dockerfile using Github Packages.",
+    "iconName": "docker-logo",
+    "categories": [
+        "Dockerfile"
+    ],
+    "filePatterns": [
+        "Dockerfile"
+    ]
+}
